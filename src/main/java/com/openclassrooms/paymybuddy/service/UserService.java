@@ -32,7 +32,7 @@ public class UserService {
   }
   
   public void addFriend(User user, User newFriend) {
-    user.addConnections(newFriend);
+    user.addConnection(newFriend);
   }
   
 }

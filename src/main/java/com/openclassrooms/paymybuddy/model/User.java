@@ -131,8 +131,18 @@ public class User {
     this.deposits = deposits;
   }
 
-  public void addConnections(User newConnection) {
+  public void addConnection(User newConnection) {
     connections.add(newConnection);
+  }
+  
+  public void addDeposit(Deposit newDeposit) {
+    deposits.add(newDeposit);
+    newDeposit.setSourceUser(this);
+  }
+  
+  public void addTransfer(Transfer newTransfer) {
+    transfers.add(newTransfer);
+    newTransfer.setSourceUser(this);
   }
   
 }
