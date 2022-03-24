@@ -13,11 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Example;
 
 import com.openclassrooms.paymybuddy.constants.Constants;
 import com.openclassrooms.paymybuddy.model.Deposit;
 import com.openclassrooms.paymybuddy.model.Transfer;
 import com.openclassrooms.paymybuddy.model.User;
+import com.openclassrooms.paymybuddy.model.util.Flow;
+import com.openclassrooms.paymybuddy.repository.UserRepository;
 import com.openclassrooms.paymybuddy.service.DepositService;
 import com.openclassrooms.paymybuddy.service.TransferService;
 import com.openclassrooms.paymybuddy.service.UserService;
@@ -29,6 +32,9 @@ public class PaymybuddyApplication implements CommandLineRunner{
   private UserService userService;
   
   @Autowired
+  private UserRepository userRepository;
+  
+  @Autowired
   private TransferService transferService;
   
   @Autowired
@@ -38,13 +44,12 @@ public class PaymybuddyApplication implements CommandLineRunner{
 		SpringApplication.run(PaymybuddyApplication.class, args);
 	}
 
-	@Override
 	@Transactional
+	@Override
 	public void run(String... args) throws Exception{
-	  
-	  User testSourceUser = userService.getUserById(111).get();
-	  User testPayeeUser = userService.getUserById(114).get();
-	  transferService.addTransfer("test transfer", new BigDecimal(30), testSourceUser, testPayeeUser);
-	  
+
+    //User sourceUserTransferTest = userService.getUserById(114).get();
+    //User payeeUserTransferTest = userService.getUserById(112).get();
+    //transferService.addTransfer("TestTransferFriendandFounds", new BigDecimal(-50), sourceUserTransferTest, payeeUserTransferTest);
 	}
 }

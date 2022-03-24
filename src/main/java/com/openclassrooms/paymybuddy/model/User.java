@@ -1,8 +1,10 @@
 package com.openclassrooms.paymybuddy.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,36 +18,49 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.transaction.Transactional;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name="utilisateur")
-public class User {
+public class User implements Serializable {
   
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   @Column(name="id")
   private int id;
   
-  @Column(name="email")
+  @Size(min=5, max=45)
+  @NotNull
+  @Email
+  @Column(name="email", unique=true, length=45, nullable=false)
   private String email;
   
-  @Column(name="mot_de_passe")
+  @Size(min=8, max=255)
+  @NotNull
+  @Column(name="mot_de_passe", length=45, nullable=false)
   private String password;
   
-  @Column(name="nom_utilisateur")
+  @Size(min=3, max=45)
+  @NotNull
+  @Column(name="nom_utilisateur", length=45, nullable=false)
   private String username;
   
-  @Column(name="solde")
+  @Column(name="solde", scale=10, precision=2)
   private BigDecimal balance;
   
-  @Column(name="compte_bancaire")
+  @Column(name="compte_bancaire", length=100)
   private String bankAccount;
   
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
       name="connexion",
-      joinColumns = @JoinColumn(name="utilisateur_id"),
-      inverseJoinColumns = @JoinColumn(name="ami_id")
+      joinColumns = @JoinColumn(name="utilisateur_id", nullable=false),
+      inverseJoinColumns = @JoinColumn(name="ami_id", nullable=false)
   )
   private List<User> connections;
   
@@ -55,8 +70,18 @@ public class User {
   
   @OneToMany(mappedBy="sourceUser",
             fetch = FetchType.LAZY,
-             cascade = CascadeType.ALL)
+             cascade = CascadeType.REMOVE)
   private List<Deposit> deposits;
+  
+  
+  public User() {
+  }
+
+  public User(String email, String password, String username) {
+  this.email = email;
+  this.password = password;
+  this.username = username;
+  }
   
   
   public int getId() {
@@ -131,18 +156,37 @@ public class User {
     this.deposits = deposits;
   }
 
-  public void addConnection(User newConnection) {
-    connections.add(newConnection);
+  public boolean addConnection(User newConnection) {
+    return this.connections.add(newConnection);
   }
   
   public void addDeposit(Deposit newDeposit) {
-    deposits.add(newDeposit);
+    this.deposits.add(newDeposit);
     newDeposit.setSourceUser(this);
   }
   
   public void addTransfer(Transfer newTransfer) {
-    transfers.add(newTransfer);
+    this.transfers.add(newTransfer);
     newTransfer.setSourceUser(this);
   }
+
+  
+  @Override
+  public int hashCode() {
+    return Objects.hash(email);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    User other = (User) obj;
+    return Objects.equals(email, other.email);
+  }
+  
   
 }

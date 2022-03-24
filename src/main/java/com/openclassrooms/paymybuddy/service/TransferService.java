@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,7 @@ import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.repository.TransferRepository;
 import com.openclassrooms.paymybuddy.util.FeeCalculator;
 
+@Transactional
 @Service
 public class TransferService {
 
@@ -21,6 +24,14 @@ public class TransferService {
   
   public List<Transfer> getTransfers() {
     return transferRepository.findAll();
+  }
+  
+  public List<Transfer> getTransfersBySourceUser(User user){
+    return transferRepository.findBySourceUser(user);
+  }
+  
+  public List<Transfer> getTransfersByPayeeUser(User user){
+    return transferRepository.findByPayeeUser(user);
   }
   
   public Optional<Transfer> getTransferById(Integer id){
@@ -35,7 +46,16 @@ public class TransferService {
     transferRepository.deleteById(id);
   }
   
+  public void deleteTransfersBySourceUser(User user){
+    transferRepository.deleteBySourceUser(user);
+  }
+  
+  public void deleteTransfersByPayeeUser(User user){
+    transferRepository.deleteByPayeeUser(user);
+  }
+  
   public boolean addTransfer(String description, BigDecimal amount, User sourceUser, User payeeUser) {
+    if(!sourceUser.getConnections().contains(payeeUser)) return false;
     BigDecimal fee = new BigDecimal(0);
     if (sourceUser.getBalance().compareTo(amount) >= 0) {
       fee = FeeCalculator.feeCalculator(amount);

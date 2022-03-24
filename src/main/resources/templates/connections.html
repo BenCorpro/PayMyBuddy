@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="https://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h2 class="h2">Liste des connexions</h2>
+		<table>
+			<thead>
+				<tr>
+					<th>Email</th>
+					<th>Nom d'utilisateur</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${connexions.empty}">
+					<td colspan="3">Aucune connexion en base de données</td>
+				</tr>
+				<tr th:each="connexion: ${connexions}">
+					<td><span th:text="${connexion.username}">Nom d'utilisateur</span></td>
+					<td><span th:text="${connexion.email}">Email</span></td>
+				</tr>	
+			</tbody>
+		</table>
+</body>
+</html>

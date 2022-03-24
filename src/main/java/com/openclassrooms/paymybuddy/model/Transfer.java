@@ -1,6 +1,7 @@
 package com.openclassrooms.paymybuddy.model;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,13 +14,23 @@ import javax.persistence.Table;
 @Table(name="virement")
 public class Transfer extends Transaction {
   
-  @Column(name="frais")
+  @Column(name="frais", scale=10, precision=2, nullable=false)
   private BigDecimal fee;
   
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="utilisateur_destinataire")
+  @JoinColumn(name="utilisateur_destinataire", nullable=false)
   private User payeeUser;
 
+  
+  public Transfer() {
+  }
+
+  public Transfer(Calendar dateTime, String description, BigDecimal amount, User sourceUser, User payeeUser, BigDecimal fee) {
+  super(dateTime, description, amount, sourceUser);
+  this.payeeUser = payeeUser;
+  this.fee = fee;
+  }
+  
   
   public User getPayeeUser() {
     return payeeUser;

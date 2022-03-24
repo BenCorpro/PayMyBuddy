@@ -1,5 +1,6 @@
 package com.openclassrooms.paymybuddy.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
@@ -15,7 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @MappedSuperclass
-public abstract class Transaction {
+public abstract class Transaction implements Serializable {
   
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -23,26 +24,37 @@ public abstract class Transaction {
   private int id;
   
   @Temporal(TemporalType.TIMESTAMP)
-  @Column(name="horodatage")
+  @Column(name="horodatage", nullable=false)
   private Calendar dateTime;
   
-  @Column(name="description")
+  @Column(name="description", length=255)
   private String description;
   
-  @Column(name="montant")
+  @Column(name="montant", scale=10, precision=2, nullable=false)
   private BigDecimal amount;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="utilisateur_source")
+  @JoinColumn(name="utilisateur_source", nullable=false)
   private User sourceUser;
   
   
-  public User getSourceUser() {
-    return sourceUser;
+  public Transaction() {
   }
 
-  public void setSourceUser(User sourceUser) {
-    this.sourceUser = sourceUser;
+  public Transaction(Calendar dateTime, String description, BigDecimal amount, User sourceUser) {
+  this.dateTime = dateTime;
+  this.description = description;
+  this.amount = amount;
+  this.sourceUser = sourceUser;
+  }
+
+  
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
   }
 
   public Calendar getDateTime() {
@@ -67,6 +79,14 @@ public abstract class Transaction {
 
   public void setAmount(BigDecimal amount) {
     this.amount = amount;
+  }
+
+  public User getSourceUser() {
+    return sourceUser;
+  }
+
+  public void setSourceUser(User sourceUser) {
+    this.sourceUser = sourceUser;
   }
   
    

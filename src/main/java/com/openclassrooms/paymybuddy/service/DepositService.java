@@ -5,14 +5,17 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.openclassrooms.paymybuddy.constants.Constants;
 import com.openclassrooms.paymybuddy.model.Deposit;
 import com.openclassrooms.paymybuddy.model.User;
+import com.openclassrooms.paymybuddy.model.util.Flow;
 import com.openclassrooms.paymybuddy.repository.DepositRepository;
 
+@Transactional
 @Service
 public class DepositService {
 
@@ -21,6 +24,10 @@ public class DepositService {
   
   public List<Deposit> getDeposits(){
     return depositRepository.findAll();
+  }
+  
+  public List<Deposit> getDepositsBySourceUser(User user){
+    return depositRepository.findBySourceUser(user);
   }
   
   public Optional<Deposit> getDepositById(Integer id){
@@ -35,12 +42,16 @@ public class DepositService {
     depositRepository.deleteById(id);
   }
   
-  public boolean addDeposit(String description, BigDecimal amount, User sourceUser, String flow) {
+  public void deleteDepositsBySourceUser(User user) {
+    depositRepository.deleteBySourceUser(user);
+  }
+  
+  public boolean addDeposit(String description, BigDecimal amount, User sourceUser, Flow flow) {
     BigDecimal newBalance = new BigDecimal(0);
     switch (flow) {
-      case Constants.CREDIT : newBalance = sourceUser.getBalance().add(amount);
+      case CREDIT : newBalance = sourceUser.getBalance().add(amount);
                      break;
-      case Constants.DEBIT :  if (sourceUser.getBalance().compareTo(amount) >= 0) {  
+      case DEBIT :  if (sourceUser.getBalance().compareTo(amount) >= 0) {  
                        newBalance = sourceUser.getBalance().subtract(amount);
                      } else {
                        return false;
