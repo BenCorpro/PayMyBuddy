@@ -18,6 +18,8 @@ import javax.persistence.TemporalType;
 @MappedSuperclass
 public abstract class Transaction implements Serializable {
   
+  private static final long serialVersionUID = -2957898875402182878L;
+
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   @Column(name="id")

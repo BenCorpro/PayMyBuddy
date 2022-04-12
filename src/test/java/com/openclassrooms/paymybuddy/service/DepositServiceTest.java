@@ -1,9 +1,8 @@
 package com.openclassrooms.paymybuddy.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
@@ -18,7 +17,10 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 
+import com.openclassrooms.paymybuddy.dto.DepositDTO;
+import com.openclassrooms.paymybuddy.exceptions.UserBalanceAmountException;
 import com.openclassrooms.paymybuddy.model.Deposit;
 import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.model.util.Flow;
@@ -35,6 +37,7 @@ public class DepositServiceTest {
   @AfterAll
   public void cleanDB() {
     depositService.deleteDepositsBySourceUser(userService.getUserById(9).get());
+    depositService.deleteDepositsBySourceUser(userService.getUserById(8).get());
     Deposit depositTestDel = new Deposit(Calendar.getInstance(), "versementDelTest", new BigDecimal(1.23), userService.getUserById(16).get(), Flow.CREDIT);
     depositService.saveDeposit(depositTestDel);
   }
@@ -43,7 +46,7 @@ public class DepositServiceTest {
   public void getDeposits_ReturnsAllDeposits() {
     List<Deposit> results = depositService.getDeposits();
     assertNotNull(results);
-    assertEquals(20, results.get(8).getSourceUser().getId());
+    assertEquals(15, results.get(8).getSourceUser().getId());
   }
   
   @Test
@@ -63,36 +66,48 @@ public class DepositServiceTest {
   
   @Test
   public void deleteDepositById_ExistingDeposit() {
-  List<Deposit> depositDelTest = depositService.getDepositsBySourceUser(userService.getUserById(16).get());
-    depositService.deleteDepositById(depositDelTest.get(0).getId());
-    assertTrue(depositService.getDepositsBySourceUser(userService.getUserById(16).get()).isEmpty());
+	Page<Deposit> depositDelTest = depositService.getDepositsBySourceUser(userService.getUserById(16).get(), 0);
+    List<Deposit> listDepositDelTest = depositDelTest.getContent();
+	depositService.deleteDepositById(listDepositDelTest.get(0).getId());
+    assertTrue(depositService.getDepositsBySourceUser(userService.getUserById(16).get(), 0).isEmpty());
   }
   
   @Transactional
   @Test
-  public void addDeposit_CreditCorrectAmount() {
-    User userDepositTest = userService.getUserById(24).get();
-    depositService.addDeposit("TestSoldeNullDB", new BigDecimal(20), userDepositTest, Flow.CREDIT);
-    assertNotNull(depositService.getDepositsBySourceUser(userDepositTest));
-    assertEquals(20.00, depositService.getDepositsBySourceUser(userDepositTest).get(0).getAmount().doubleValue());
-    assertEquals(20.00, userService.getUserById(24).get().getBalance().doubleValue());
+  public void addDeposit_CreditCorrectAmount() throws UserBalanceAmountException{
+    User userDepositTest = userService.getUserById(8).get();
+    DepositDTO depositDtoTest = new DepositDTO();
+    depositDtoTest.setAmount(new BigDecimal(20));
+    depositDtoTest.setDescription("TestSoldeNullDB");
+    depositDtoTest.setFlow(Flow.CREDIT);
+    depositService.addDeposit(userDepositTest, depositDtoTest);
+    assertNotNull(depositService.getDepositsBySourceUser(userDepositTest, 0));
+    assertEquals(20.00, depositService.getDepositsBySourceUser(userDepositTest, 0).toList().get(0).getAmount().doubleValue());
+    assertEquals(29.51, userService.getUserById(8).get().getBalance().doubleValue());
   }
   
   @Transactional
   @Test
-  public void addDeposit_DebitSufficientBalance() {
+  public void addDeposit_DebitSufficientBalance() throws UserBalanceAmountException{
     User userDepositTest = userService.getUserById(17).get();
-    depositService.addDeposit("TestDebitSufficient", new BigDecimal(30), userDepositTest, Flow.DEBIT);
-    assertNotNull(depositService.getDepositsBySourceUser(userDepositTest));
-    assertEquals(30.00, depositService.getDepositsBySourceUser(userDepositTest).get(0).getAmount().doubleValue());
+    DepositDTO depositDtoTest = new DepositDTO();
+    depositDtoTest.setAmount(new BigDecimal(30));
+    depositDtoTest.setDescription("TestDebitSufficient");
+    depositDtoTest.setFlow(Flow.DEBIT);
+    depositService.addDeposit(userDepositTest, depositDtoTest);
+    assertNotNull(depositService.getDepositsBySourceUser(userDepositTest, 0));
+    assertEquals(30.00, depositService.getDepositsBySourceUser(userDepositTest, 0).toList().get(0).getAmount().doubleValue());
     assertEquals(944.51, userService.getUserById(17).get().getBalance().doubleValue());
   }
   
   @Transactional
   @Test
-  public void addDeposit_DebitInsufficientBalance() {
+  public void addDeposit_DebitInsufficientBalance() throws UserBalanceAmountException{
     User userDepositTest = userService.getUserById(13).get();
-    boolean result = depositService.addDeposit("TestDebitInsufficient", new BigDecimal(30), userDepositTest, Flow.DEBIT);
-    assertFalse(result);
+    DepositDTO depositDtoTest = new DepositDTO();
+    depositDtoTest.setAmount(new BigDecimal(30));
+    depositDtoTest.setDescription("TestDebitInsufficient");
+    depositDtoTest.setFlow(Flow.DEBIT);
+    assertThrows(UserBalanceAmountException.class, () -> depositService.addDeposit(userDepositTest, depositDtoTest));
   }
 }

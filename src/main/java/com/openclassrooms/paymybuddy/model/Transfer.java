@@ -14,6 +14,8 @@ import javax.persistence.Table;
 @Table(name="virement")
 public class Transfer extends Transaction {
   
+  private static final long serialVersionUID = 4863808798882822612L;
+
   @Column(name="frais", scale=10, precision=2, nullable=false)
   private BigDecimal fee;
   

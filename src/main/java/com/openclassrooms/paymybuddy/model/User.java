@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,43 +17,33 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.transaction.Transactional;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name="utilisateur")
 public class User implements Serializable {
   
+  private static final long serialVersionUID = 2982260233979389424L;
+
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   @Column(name="id")
   private int id;
   
-  @Size(min=5, max=45)
-  @NotNull
-  @Email
   @Column(name="email", unique=true, length=45, nullable=false)
   private String email;
-  
-  @Size(min=8, max=255)
-  @NotNull
-  @Column(name="mot_de_passe", length=45, nullable=false)
+
+  @Column(name="mot_de_passe", length=255, nullable=false)
   private String password;
   
-  @Size(min=3, max=45)
-  @NotNull
   @Column(name="nom_utilisateur", length=45, nullable=false)
   private String username;
   
   @Column(name="solde", scale=10, precision=2)
-  private BigDecimal balance;
+  private BigDecimal balance = new BigDecimal(0);
   
   @Column(name="compte_bancaire", length=100)
-  private String bankAccount;
+  private String bankAccount = "Enter a bank account to make deposits";
   
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
@@ -69,8 +58,7 @@ public class User implements Serializable {
   private List<Transfer> transfers;
   
   @OneToMany(mappedBy="sourceUser",
-            fetch = FetchType.LAZY,
-             cascade = CascadeType.REMOVE)
+            fetch = FetchType.LAZY)
   private List<Deposit> deposits;
   
   

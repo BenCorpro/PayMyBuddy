@@ -1,7 +1,7 @@
 package com.openclassrooms.paymybuddy.repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,12 +11,7 @@ import com.openclassrooms.paymybuddy.model.User;
 @Repository
 public interface TransferRepository extends JpaRepository<Transfer, Integer>{
 
-  public List<Transfer> findBySourceUser(User user);
-  
-  public List<Transfer> findByPayeeUser(User user);
+  public Page<Transfer> findBySourceUser(User user, Pageable pageable);
   
   public void deleteBySourceUser(User user);
-  
-  public void deleteByPayeeUser(User user);
-  
 }

@@ -1,23 +1,17 @@
 package com.openclassrooms.paymybuddy.controller;
 
-import java.util.List;
-
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
+import com.openclassrooms.paymybuddy.dto.UserDTO;
+import com.openclassrooms.paymybuddy.exceptions.UserConnectionException;
 import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.service.UserService;
 
@@ -27,77 +21,45 @@ public class UserController {
   @Autowired
   private UserService userService;
   
-  @GetMapping("/user/")
+  @GetMapping("/user")
   public String home(Model model, @RequestParam(name="page", defaultValue="0") int page) {
     Page<User> pageUsers = userService.getUsers(page);
-    model.addAttribute("users", pageUsers.getContent());
+    model.addAttribute("usersDto", pageUsers.getContent());
     model.addAttribute("pages", new int[pageUsers.getTotalPages()]);
     model.addAttribute("currentPage", page);
-    return "home2";
+     
+    return "home";
   }
   
-  @GetMapping("/user/userhome")
+  @GetMapping("/userSearch")
   public String chercher(Model model, @RequestParam(name="page", defaultValue="0") int page,
                                   @RequestParam(name="motCle", defaultValue="") String email) {
-    Page<User> pageUsers = userService.getUsersByEmail(email, page);
-    model.addAttribute("users", pageUsers.getContent());
-    model.addAttribute("pages", new int[pageUsers.getTotalPages()]);
+    Page<UserDTO> pageUsersDTO = userService.getUsersDTOByEmail(email, page);
+    model.addAttribute("users", pageUsersDTO.getContent());
+    model.addAttribute("pages", new int[pageUsersDTO.getTotalPages()]);
     model.addAttribute("currentPage", page);
-    return "home2";
+    model.addAttribute("motCle", email);
+    return "home";
   }
   
-  @GetMapping("/admin/delete")
-  public String delete(int id, int page, String motCle) {
-    userService.deleteUserById(id);
-    return "redirect:/user/userhome?page="+page+"&motCle="+motCle;
+  @GetMapping("/addFriend")
+  public String addFriend(Authentication authentication, String email, int page, String motCle, Model model) {
+   User currentUser = userService.getUserByEmail(authentication.getName()).get();
+   User newFriend = userService.getUserByEmail(email).get();
+   try {userService.addFriend(currentUser, newFriend); 
+   } catch (UserConnectionException ucEx) {
+     model.addAttribute("connection", ucEx.getMessage());
+     return "home";
+   }
+   return "redirect:/transfer";
   }
   
-  @GetMapping("/admin/formUtilisateur")
-  public String form(Model model) {
-    model.addAttribute("user", new User());
-    return "FormUtilisateur";
-  }
-  
-  @GetMapping("/admin/edit")
-  public String edit(Model model, int id) {
-    User user = userService.getUserById(id).get();
-    model.addAttribute("user", user);
-    return "EditUtilisateur";
-  }
-  
-  @GetMapping("/user/{userId}")
-  public String getUser(Model model, @PathVariable("userId") final int userId) {
-    User user = userService.getUserById(userId).get();
-    model.addAttribute("user", user);
-    return "home2";
-  }
-  
-  @GetMapping("/connexions/{userId}")
-  public String getConnections(Model model, @PathVariable("userId") final int userId) {
-    List<User> connexions = userService.getConnections(userId);
-    model.addAttribute("connexions", connexions);
-    return "connections";
-  }
-  
-  @PostMapping("/admin/saveUser")
-  public String saveUser(@Valid User user, BindingResult bindingResult, Model model) {
-    if(bindingResult.hasErrors()) return "FormUtilisateur";
-    userService.saveUser(user);
-    return "redirect:/user/";
+  @PostMapping("/addBankAccount")
+  public String addBankAccount(Authentication authentication, String accountNumber) {
+   User currentUser = userService.getUserByEmail(authentication.getName()).get();
+   userService.addBankAccount(currentUser, accountNumber); 
+   return "redirect:/profile";
   }
 
-  @GetMapping("/")
-  public String defaut() {
-    return "redirect:/user/";
-  }
   
-  @GetMapping("/403")
-  public String notAutorized() {
-    return "403";
-  }
-  
-  @GetMapping("/login")
-  public String login() {
-    return "login";
-  }
 }

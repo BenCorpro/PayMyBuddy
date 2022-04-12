@@ -3,7 +3,6 @@ package com.openclassrooms.paymybuddy.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -18,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 
+import com.openclassrooms.paymybuddy.dto.RegisterDTO;
+import com.openclassrooms.paymybuddy.exceptions.UserAccountException;
+import com.openclassrooms.paymybuddy.exceptions.UserConnectionException;
 import com.openclassrooms.paymybuddy.model.User;
 
 @SpringBootTest
@@ -29,18 +31,20 @@ public class UserServiceTest {
   
   @AfterAll
   public void cleanDB() {
-    userService.deleteUserByEmail("utilisateurRecTest@mail.com");
-    User userTestDel = new User("utilisateurDelTest@mail.com", "deltest123", "delTesteur");
+    userService.deleteUserByEmail("utilisateurRecTest@email.com");
+    userService.deleteUserByEmail("utilisateurNewTest@email.com");
+    User userTestDel = new User("utilisateurDelTest@email.com", "deltest123", "delTesteur");
     userService.saveUser(userTestDel);
   }
-  /**
+
   @Test
   public void getUsers_ReturnsAllUsers() {
-    List<User> results = userService.getUsers();
+    Page<User> results = userService.getUsers(0);
+    List<User> listResults = results.getContent();
     assertNotNull(results);
-    assertEquals("JacobBoyd", results.get(1).getUsername());
+    assertEquals("JacobBoyd", listResults.get(1).getUsername());
   }
-  **/
+
   @Test
   public void getUserById_CorrectId_ReturnsUser() {
     User result = userService.getUserById(3).get();
@@ -50,7 +54,7 @@ public class UserServiceTest {
   
   @Test
   public void saveUser_CorrectInfos_ReturnsUser() {
-    User userRecTest = new User("utilisateurRecTest@mail.com", "restest123", "recTesteur");
+    User userRecTest = new User("utilisateurRecTest@email.com", "restest123", "recTesteur");
     userRecTest = userService.saveUser(userRecTest);
     assertNotNull(userRecTest);
     assertEquals("restest123", userRecTest.getPassword());
@@ -58,9 +62,9 @@ public class UserServiceTest {
   
   @Test
   public void deleteUser_ExistingUser() {
-  User userDelTest = userService.getUserByEmail("utilisateurDelTest@mail.com").get();
+  User userDelTest = userService.getUserByEmail("utilisateurDelTest@email.com").get();
     userService.deleteUserById(userDelTest.getId());
-    assertTrue(userService.getUserByEmail("utilisateurDelTest@mail.com").isEmpty());
+    assertTrue(userService.getUserByEmail("utilisateurDelTest@email.com").isEmpty());
   }
   
   @Test
@@ -80,19 +84,39 @@ public class UserServiceTest {
     assertEquals(0, usersResultList.size());
   }
   
+  @Test
+  public void newUser_NotExisting_returnsUser() throws UserAccountException{
+	  RegisterDTO registerDtoTest = new RegisterDTO();
+	  registerDtoTest.setEmail("utilisateurNewTest@email.com");
+	  registerDtoTest.setPassword("12345678");
+	  registerDtoTest.setUsername("utilisateurNewTest");
+	  User userNewTest = userService.newUser(registerDtoTest);
+	  assertNotNull(userNewTest);
+	  assertEquals("utilisateurNewTest", userNewTest.getUsername());
+  }
+  
+  
+  @Test
+  public void addBankAccount_AccountNumberAdded() {
+	  User userAccountTest = userService.getUserById(10).get();
+	  userService.addBankAccount(userAccountTest, "20202020");
+	  assertNotNull(userAccountTest.getBankAccount());
+	  assertTrue(userAccountTest.getBankAccount().equals("20202020"));
+  }
+  
   @Transactional
   @Test
-  public void addFriend_ExistingUser() {
+  public void addFriend_ExistingUser() throws UserConnectionException{
     User userFriendTest = userService.getUserById(6).get();
     userService.addFriend(userFriendTest, userService.getUserById(15).get());
     assertNotNull(userService.getConnections(userFriendTest.getId()));
     assertTrue(userService.getConnections(userFriendTest.getId()).contains(userService.getUserById(15).get()));
   }
   
-  @Transactional
+  
   @Test
   public void getConnections_NoFriends() {
-    User userFriendTest = userService.getUserById(6).get();
+    User userFriendTest = userService.getUserById(7).get();
     List<User> friendListTest = userService.getConnections(userFriendTest.getId());
     assertTrue(friendListTest.isEmpty());
   }

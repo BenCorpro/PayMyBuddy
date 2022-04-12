@@ -2,8 +2,6 @@ package com.openclassrooms.paymybuddy.repository;
 
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,5 +22,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
   public boolean existsByEmail(@Param("email") String email);
   
   public void deleteByEmail(String email);
-  
 }

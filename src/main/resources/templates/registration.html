@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>PayMyBuddy - Registration</title>
+
+<link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" >
+<link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+	<div class="container w-50 border p-3 m-5 mx-auto  d-flex justify-content-center">
+
+	<form th:object="${register}" th:action="@{/registration}" method="post">
+		<div class="row my-3 text-center">
+			<h3><span class="badge green ">Pay My Buddy</span></h3>
+		</div>
+		
+		<div class="row my-3">
+			<label class="control-label" for="email">Email:</label>
+			<input id="email" class="form-control" type="text" name="email" th:field="*{email}" maxlength="45" required>
+			<span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></span>
+		</div>
+		
+		<div class="row my-3">
+			<label class="control-label">Password:</label>
+			<input class="form-control" type="password" name="password" th:field="*{password}" maxlength="30" required>
+			<span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></span>
+		</div>
+		
+		<div class="row my-3">
+			<label class="control-label">Username:</label>
+			<input class="form-control" type="text" name="username" th:field="*{username}" maxlength="45" required>
+			<span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></span>
+		</div>
+		
+		<div class="row mt-5">
+			<button type="submit" class="btn btn-primary">Register</button>
+		</div>
+		<div class="row my-3 text-center">
+				<a th:href="@{/login}">Return to login</a>
+		</div>
+		</form>
+		
+	</div>
+	
+	<script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

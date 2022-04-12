@@ -15,6 +15,8 @@ import com.openclassrooms.paymybuddy.model.util.Flow;
 @Table(name="versement")
 public class Deposit extends Transaction {
   
+  private static final long serialVersionUID = -2436913410499819279L;
+  
   @Enumerated(EnumType.STRING)
   @Column(name="mouvement", length=6, nullable=false)
   private Flow flow;

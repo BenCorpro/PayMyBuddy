@@ -10,4 +10,5 @@ public class FeeCalculator {
     BigDecimal fee = amount.multiply(Constants.feePercent);
     return fee;
   }
+  
 }
