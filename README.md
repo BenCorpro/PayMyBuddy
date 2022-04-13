@@ -27,7 +27,7 @@ Project 6 of Java Application Developper Course
 
 ##Dbs creation scripts
 
-[DB Scripts](https://github.com/BenCorpro/PayMyBuddy/resources)
+[DB Scripts](https://github.com/BenCorpro/PayMyBuddy/tree/main/resources)
 
 
 ##Technologies
@@ -41,30 +41,17 @@ Project 6 of Java Application Developper Course
 ##Installation
 
 
-1. Clone the repository
-<br/>
-```
-git clone https://github.com/BenCorpro/PayMyBuddy
-```
-2. Get into the project folder
-<br/>
-```
-cd ../path/to/the/file
-```
-3. Package the application
-<br/>
-```
-mvnw package
-```
-4. Copy the application.properties file in a "config" folder, and copy the jar next to it (for database id and password)
-<br/>
-5. Execute the jar
-<br/>
-```
-java -jar paymybuddy-0.0.1-SNAPSHOT.jar
-```
-6. Go to [http://localhost:8080](http://localhost:8080) on your browser
-<br/>
+* Clone the repository: git clone https://github.com/BenCorpro/PayMyBuddy
 
-Side information: To use the application database needs to be created and filled with the provided SQL scripts
+* Get into the project folder: cd ../path/to/the/file
+
+* Package the application: mvn clean package DskipTests=true (to skip the tests since tests needs connection to a test database, and properties are externalized)
+
+* Copy the application.properties file (in resources folder) in a "config" folder, and copy the jar next to it (for database id and password)
+
+* Execute the jar: java -jar paymybuddy-0.0.1-SNAPSHOT.jar
+
+* Go to [http://localhost:8080](http://localhost:8080) on your browser
+
+* Side information: To use the application database needs to be created and filled with the provided SQL scripts
 
