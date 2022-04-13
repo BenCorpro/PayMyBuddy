@@ -17,12 +17,12 @@ Project 6 of Java Application Developper Course
 
 ##Uml Diagram
 
-![UML_Diagram](./deliverables/pmb_diagrammeUML.png)
+![UML_Diagram](./deliverables/diagrammeUML.png)
 
 
 ##Data physical model
 
-![Physical_Model](./deliverables/pmb_modelephysique.png)
+![Physical_Model](./deliverables/modelephysique.png)
 
 
 ##Dbs creation scripts
