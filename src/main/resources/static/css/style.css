@@ -1,0 +1,31 @@
+@charset "UTF-8";
+.bgimg{
+	background-image:url("../img/pmblogbgimg.png");
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.green{
+	background-color:#8FBC8F;
+}
+
+.grey{
+	background-color:#eeeeee;
+}
+
+.lightblue{
+	background-color:#6495ED;
+}
+
+.seashell{
+	background-color:#FFF5EE;
+}
+
+
+.black{
+	color:#000000;
+}
+
+
+
+

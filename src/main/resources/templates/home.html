@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>PayMyBuddy - Home</title>
+
+<link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" >
+<link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}">
+</head>
+
+<body >
+
+	<div class="container-fluid">
+		
+		<div class="row" th:fragment="nav">
+		<nav class="navbar navbar-expand-md">
+			<h1><span class="badge green">Pay My Buddy</span></h1>
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+				aria-controls="navbarNavAltMarkup" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse justify-content-end"
+				id="navbarNavAltMarkup">
+				<div class="navbar-nav">
+					<a class="nav-link black active" aria-current="page" th:href="@{/user}">Home</a>
+					<a class="nav-link black" th:href="@{/transfer}">Transfer</a> 
+					<a class="nav-link black" th:href="@{/profile}">Profile</a> 
+					<a class="nav-link black disabled" aria-current="page" th:href="@{/contact}">Contact</a>
+					<form th:action="@{/logout}" method="POST">
+						<button id="logout-btn" type="submit" class="btn btn-link black">Log
+							off</button>
+					</form>
+				</div>
+			</div>
+		</nav>
+		
+		<nav aria-label="breadcrumb" class="navbar navbar-expand-lg grey" >
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a th:href="@{/user/}">Home</a></li>
+				<li class="breadcrumb-item active" aria-current="page"
+					th:text="${#authentication.principal.username}">Library</li>
+			</ol>
+		</nav>
+		</div>
+		
+	<div class="container mt-2">
+
+		<div class="card">
+			<div class="card-header grey">Looking for new Buddies</div>
+				<form th:action="@{/userSearch}" method="get">
+				<input type="text" name="motCle" th:value="${motCle}" placeholder="Email">
+				<button type="submit" class="btn btn-primary">Search</button>
+				</form>
+			<div class="card-body text-center">
+				<div class="table-responsive">
+				<table class="table table-striped m-0 border border-dark text-center">
+					<thead>
+					<tr class="table lightblue">
+						<th>Email</th>
+						<th>Username</th>
+						<th>Add as Buddy</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr th:each="userDto: ${users}">
+						<td th:text="${userDto.email}">Email</td>
+						<td th:text="${userDto.username}">Nom d'utilisateur</td>
+						<td>
+						<a class="btn btn-primary" th:href="@{/addFriend(email=${userDto.email}, page =${currentPage}, motCle=${motCle})}">Add Connection</a>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				</div>
+				<span th:if="${connection != null}" th:text="${connection}">Error</span>
+			</div>
+				<ul class="pagination d-flex justify-content-center">
+				<li th:class="${currentPage==status.index?'active':''}" th:each="page,status:${pages}">
+				<a class="page-link" th:href="@{/userSearch(page=${status.index}, motCle=${motCle})}" th:text="${status.count}"></a>
+				</li>
+				</ul>
+		</div>
+
+		<div class="card mt-3">
+			<div class="card-header grey">Add a Bank Account</div>
+			<div class="card-body text-center">
+				<form th:action="@{/addBankAccount}" method="post">
+				<input type="text" name="accountNumber" pattern="[0-9]{3-100}" title="Account number should only contains numbers up to 100" th:value="${accountNumber}" placeholder="Bank Account Number">
+				<button type="submit" class="btn btn-primary">Submit</button>
+				</form>
+			</div>
+		</div>
+
+	</div>
+	</div>
+	
+	<script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
