@@ -2,7 +2,6 @@ package com.openclassrooms.paymybuddy.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 
@@ -17,7 +16,7 @@ public interface TransferService {
 
 	Page<Transfer> getTransfersBySourceUser(User user, int page);
 
-	Optional<Transfer> getTransferById(Integer id);
+	Transfer getTransferById(Integer id);
 
 	Transfer saveTransfer(Transfer transfer);
 

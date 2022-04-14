@@ -3,7 +3,6 @@ package com.openclassrooms.paymybuddy.service.impl;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -36,8 +35,8 @@ public Page<Deposit> getDepositsBySourceUser(User user, int page){
   }
   
   @Override
-public Optional<Deposit> getDepositById(Integer id){
-    return depositRepository.findById(id);
+public Deposit getDepositById(Integer id){
+    return depositRepository.findById(id).orElse(null);
   }
   
   @Override

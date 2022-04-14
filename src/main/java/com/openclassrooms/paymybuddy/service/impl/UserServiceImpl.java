@@ -1,7 +1,6 @@
 package com.openclassrooms.paymybuddy.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -34,8 +33,8 @@ public Page<User> getUsers(int page){
   }
   
   @Override
-public Optional<User> getUserById(Integer id){
-    return userRepository.findById(id);
+public User getUserById(Integer id){
+    return userRepository.findById(id).orElse(null);
   }
   
   @Override
@@ -49,8 +48,8 @@ public Page<User> getUsersByEmail(String email, int page){
 	  }
   
   @Override
-public Optional<User> getUserByEmail(String email){
-    return userRepository.findByEmail(email);
+public User getUserByEmail(String email){
+    return userRepository.findByEmail(email).orElse(null);
   }
   
   @Override

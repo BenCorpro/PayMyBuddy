@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -41,8 +40,8 @@ public Page<Transfer> getTransfersBySourceUser(User user, int page){
   }
   
   @Override
-public Optional<Transfer> getTransferById(Integer id){
-    return transferRepository.findById(id);
+public Transfer getTransferById(Integer id){
+    return transferRepository.findById(id).orElse(null);
   }
   
   @Override
