@@ -35,7 +35,7 @@ public class TransferController {
   public String transfer(Model model, Authentication authentication, @RequestParam(name="page", defaultValue="0") int page) {
     User currentUser = userService.getUserByEmail(authentication.getName());
     List<User> connectionList = userService.getConnections(currentUser.getId());
-    Page<Transfer> pageTransfers = transferService.getTransfersBySourceUser(currentUser, page);
+    Page<Transfer> pageTransfers = transferService.getTransfersByAnyUsers(currentUser, currentUser,page);
     model.addAttribute("connectionList", connectionList);
     model.addAttribute("transfers", pageTransfers.getContent());
     model.addAttribute("pages", new int[pageTransfers.getTotalPages()]);

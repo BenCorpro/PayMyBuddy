@@ -15,6 +15,8 @@ public interface TransferService {
 	List<Transfer> getTransfers();
 
 	Page<Transfer> getTransfersBySourceUser(User user, int page);
+	
+	Page<Transfer> getTransfersByAnyUsers(User sourceUser, User payeeUser,int page);
 
 	Transfer getTransferById(Integer id);
 

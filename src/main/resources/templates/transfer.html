@@ -63,12 +63,14 @@
 				<div class="table-responsive">
 				<table class="table table-striped m-0 border border-dark text-center">
 					<tr class="table green">
-						<th>Connections</th>
+						<th>From</th>
+						<th>To</th>
 						<th>Description</th>
 						<th>Amount</th>
 					</tr>
 					<tr th:each="transfer: ${transfers}">
-						<td th:text="${transfer.payeeUser.username}">Connections</td>
+						<td th:text="${transfer.sourceUser.username}">From</td>
+						<td th:text="${transfer.payeeUser.username}">To</td>
 						<td th:text="${transfer.description}">Description</td>
 						<td th:text="${transfer.amount}">Amount</td>
 					</tr>
