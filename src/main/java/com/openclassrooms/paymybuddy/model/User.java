@@ -71,8 +71,20 @@ public class User implements Serializable {
   this.username = username;
   }
   
-  
-  public int getId() {
+  public User(int id, String email, String password, String username, BigDecimal balance, String bankAccount,
+		List<User> connections, List<Transfer> transfers, List<Deposit> deposits) {
+	this.id = id;
+	this.email = email;
+	this.password = password;
+	this.username = username;
+	this.balance = balance;
+	this.bankAccount = bankAccount;
+	this.connections = connections;
+	this.transfers = transfers;
+	this.deposits = deposits;
+}
+
+public int getId() {
     return id;
   }
 

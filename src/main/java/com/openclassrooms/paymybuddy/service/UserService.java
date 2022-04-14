@@ -1,7 +1,6 @@
 package com.openclassrooms.paymybuddy.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 
@@ -15,13 +14,13 @@ public interface UserService {
 
 	Page<User> getUsers(int page);
 
-	Optional<User> getUserById(Integer id);
+	User getUserById(Integer id);
 
 	Page<UserDTO> getUsersDTOByEmail(String email, int page);
 
 	Page<User> getUsersByEmail(String email, int page);
 
-	Optional<User> getUserByEmail(String email);
+	User getUserByEmail(String email);
 
 	boolean existsByEmail(String email);
 

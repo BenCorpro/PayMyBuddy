@@ -24,10 +24,9 @@ public class UserController {
   @GetMapping("/user")
   public String home(Model model, @RequestParam(name="page", defaultValue="0") int page) {
     Page<User> pageUsers = userService.getUsers(page);
-    model.addAttribute("usersDto", pageUsers.getContent());
+    model.addAttribute("users", pageUsers.getContent());
     model.addAttribute("pages", new int[pageUsers.getTotalPages()]);
-    model.addAttribute("currentPage", page);
-     
+    model.addAttribute("currentPage", page); 
     return "home";
   }
   
@@ -44,8 +43,8 @@ public class UserController {
   
   @GetMapping("/addFriend")
   public String addFriend(Authentication authentication, String email, int page, String motCle, Model model) {
-   User currentUser = userService.getUserByEmail(authentication.getName()).get();
-   User newFriend = userService.getUserByEmail(email).get();
+   User currentUser = userService.getUserByEmail(authentication.getName());
+   User newFriend = userService.getUserByEmail(email);
    try {userService.addFriend(currentUser, newFriend); 
    } catch (UserConnectionException ucEx) {
      model.addAttribute("connection", ucEx.getMessage());
@@ -56,7 +55,7 @@ public class UserController {
   
   @PostMapping("/addBankAccount")
   public String addBankAccount(Authentication authentication, String accountNumber) {
-   User currentUser = userService.getUserByEmail(authentication.getName()).get();
+   User currentUser = userService.getUserByEmail(authentication.getName());
    userService.addBankAccount(currentUser, accountNumber); 
    return "redirect:/profile";
   }

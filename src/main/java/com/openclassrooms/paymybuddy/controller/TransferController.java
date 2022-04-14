@@ -33,7 +33,7 @@ public class TransferController {
   
   @GetMapping("/transfer")
   public String transfer(Model model, Authentication authentication, @RequestParam(name="page", defaultValue="0") int page) {
-    User currentUser = userService.getUserByEmail(authentication.getName()).get();
+    User currentUser = userService.getUserByEmail(authentication.getName());
     List<User> connectionList = userService.getConnections(currentUser.getId());
     Page<Transfer> pageTransfers = transferService.getTransfersBySourceUser(currentUser, page);
     model.addAttribute("connectionList", connectionList);
@@ -47,7 +47,7 @@ public class TransferController {
   @PostMapping("/transfer")
   public String saveTransfer(Authentication authentication, @Valid @ModelAttribute("newTransfer") TransferDTO transferDto, BindingResult bindingResult, Model model) {
     if(bindingResult.hasErrors()) return "transfer";
-    User currentUser = userService.getUserByEmail(authentication.getName()).get();
+    User currentUser = userService.getUserByEmail(authentication.getName());
     try { transferService.addTransfer(currentUser, transferDto);
     } catch (UserBalanceAmountException ubaEx){
       bindingResult.rejectValue("amount", ubaEx.getMessage(), ubaEx.getMessage());

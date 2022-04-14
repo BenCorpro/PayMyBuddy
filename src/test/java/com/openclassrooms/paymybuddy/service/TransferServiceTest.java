@@ -36,8 +36,8 @@ public class TransferServiceTest {
   
   @AfterAll
   public void cleanDB() {
-    transferService.deleteTransfersBySourceUser(userService.getUserById(8).get());
-    Transfer transferTestDel = new Transfer(Calendar.getInstance(), "virementDelTest", new BigDecimal(123), userService.getUserById(11).get(), userService.getUserById(13).get(), new BigDecimal(1.23));
+    transferService.deleteTransfersBySourceUser(userService.getUserById(8));
+    Transfer transferTestDel = new Transfer(Calendar.getInstance(), "virementDelTest", new BigDecimal(123), userService.getUserById(11), userService.getUserById(13), new BigDecimal(1.23));
     transferService.saveTransfer(transferTestDel);
   }
   
@@ -50,14 +50,14 @@ public class TransferServiceTest {
   
   @Test
   public void getTransferById_CorrectId_ReturnsTransfer() {
-    Transfer result = transferService.getTransferById(3).get();
+    Transfer result = transferService.getTransferById(3);
     assertNotNull(result);
     assertEquals(5, result.getPayeeUser().getId());
   }
   
   @Test
   public void saveTransfer_CorrectInfos_ReturnsTransfer() {
-    Transfer transferRecTest = new Transfer(Calendar.getInstance(), "virementDelTest", new BigDecimal(123), userService.getUserById(8).get(), userService.getUserById(14).get(), new BigDecimal(1.23));
+    Transfer transferRecTest = new Transfer(Calendar.getInstance(), "virementDelTest", new BigDecimal(123), userService.getUserById(8), userService.getUserById(14), new BigDecimal(1.23));
     transferRecTest = transferService.saveTransfer(transferRecTest);
     assertNotNull(transferRecTest);
     assertEquals(123, transferRecTest.getAmount().intValue());
@@ -65,17 +65,17 @@ public class TransferServiceTest {
   
   @Test
   public void deleteTransferById_ExistingTransfer() {
-	Page<Transfer> transferDelTest = transferService.getTransfersBySourceUser(userService.getUserById(11).get(), 0);
+	Page<Transfer> transferDelTest = transferService.getTransfersBySourceUser(userService.getUserById(11), 0);
 	List<Transfer> listTransferDelTest = transferDelTest.getContent();
     transferService.deleteTransferById(listTransferDelTest.get(0).getId());
-    assertTrue(transferService.getTransfersBySourceUser(userService.getUserById(11).get(), 0).isEmpty());
+    assertTrue(transferService.getTransfersBySourceUser(userService.getUserById(11), 0).isEmpty());
   }
   
   @Transactional
   @Test
   public void addTransfer_friendWithFounds() throws UserBalanceAmountException{
-    User sourceUserTransferTest = userService.getUserById(20).get();
-    User payeeUserTransferTest = userService.getUserById(19).get();
+    User sourceUserTransferTest = userService.getUserById(20);
+    User payeeUserTransferTest = userService.getUserById(19);
     TransferDTO transferDtoTest = new TransferDTO();
     transferDtoTest.setAmount(new BigDecimal(50));
     transferDtoTest.setDescription("TestTransferFriendandFounds");
@@ -83,15 +83,15 @@ public class TransferServiceTest {
     transferService.addTransfer(sourceUserTransferTest, transferDtoTest);
     assertNotNull(transferService.getTransfersBySourceUser(sourceUserTransferTest, 0));
     assertEquals(50.00, transferService.getTransfersBySourceUser(sourceUserTransferTest, 0).toList().get(2).getAmount().doubleValue());
-    assertEquals(924.94, userService.getUserById(20).get().getBalance().doubleValue());
-    assertEquals(105.49, userService.getUserById(19).get().getBalance().doubleValue());
+    assertEquals(924.94, userService.getUserById(20).getBalance().doubleValue());
+    assertEquals(105.49, userService.getUserById(19).getBalance().doubleValue());
   }
   
   @Transactional
   @Test
   public void addTransfer_notFriend() throws UserBalanceAmountException{
-    User sourceUserTransferTest = userService.getUserById(18).get();
-    User payeeUserTransferTest = userService.getUserById(19).get();
+    User sourceUserTransferTest = userService.getUserById(18);
+    User payeeUserTransferTest = userService.getUserById(19);
     TransferDTO transferDtoTest = new TransferDTO();
     transferDtoTest.setAmount(new BigDecimal(50));
     transferDtoTest.setDescription("TestTransferNotFriends");
@@ -103,8 +103,8 @@ public class TransferServiceTest {
   @Transactional
   @Test
   public void addTransfer_noSufficientFounds() throws UserBalanceAmountException{
-    User sourceUserTransferTest = userService.getUserById(13).get();
-    User payeeUserTransferTest = userService.getUserById(14).get();
+    User sourceUserTransferTest = userService.getUserById(13);
+    User payeeUserTransferTest = userService.getUserById(14);
     TransferDTO transferDtoTest = new TransferDTO();
     transferDtoTest.setAmount(new BigDecimal(50));
     transferDtoTest.setDescription("TestTransferNoSufficientFounds");

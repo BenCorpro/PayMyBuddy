@@ -3,6 +3,7 @@ package com.openclassrooms.paymybuddy.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class UserServiceTest {
 
   @Test
   public void getUserById_CorrectId_ReturnsUser() {
-    User result = userService.getUserById(3).get();
+    User result = userService.getUserById(3);
     assertNotNull(result);
     assertEquals("TenleyBoyd", result.getUsername());
   }
@@ -62,9 +63,9 @@ public class UserServiceTest {
   
   @Test
   public void deleteUser_ExistingUser() {
-  User userDelTest = userService.getUserByEmail("utilisateurDelTest@email.com").get();
+  User userDelTest = userService.getUserByEmail("utilisateurDelTest@email.com");
     userService.deleteUserById(userDelTest.getId());
-    assertTrue(userService.getUserByEmail("utilisateurDelTest@email.com").isEmpty());
+    assertNull(userService.getUserByEmail("utilisateurDelTest@email.com"));
   }
   
   @Test
@@ -98,7 +99,7 @@ public class UserServiceTest {
   
   @Test
   public void addBankAccount_AccountNumberAdded() {
-	  User userAccountTest = userService.getUserById(10).get();
+	  User userAccountTest = userService.getUserById(10);
 	  userService.addBankAccount(userAccountTest, "20202020");
 	  assertNotNull(userAccountTest.getBankAccount());
 	  assertTrue(userAccountTest.getBankAccount().equals("20202020"));
@@ -107,16 +108,16 @@ public class UserServiceTest {
   @Transactional
   @Test
   public void addFriend_ExistingUser() throws UserConnectionException{
-    User userFriendTest = userService.getUserById(6).get();
-    userService.addFriend(userFriendTest, userService.getUserById(15).get());
+    User userFriendTest = userService.getUserById(6);
+    userService.addFriend(userFriendTest, userService.getUserById(15));
     assertNotNull(userService.getConnections(userFriendTest.getId()));
-    assertTrue(userService.getConnections(userFriendTest.getId()).contains(userService.getUserById(15).get()));
+    assertTrue(userService.getConnections(userFriendTest.getId()).contains(userService.getUserById(15)));
   }
   
   
   @Test
   public void getConnections_NoFriends() {
-    User userFriendTest = userService.getUserById(7).get();
+    User userFriendTest = userService.getUserById(7);
     List<User> friendListTest = userService.getConnections(userFriendTest.getId());
     assertTrue(friendListTest.isEmpty());
   }

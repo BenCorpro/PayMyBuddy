@@ -30,7 +30,7 @@ public class DepositController {
 
   @GetMapping("/profile")
   public String profile(Model model, Authentication authentication, @RequestParam(name="page", defaultValue="0") int page) {
-    User currentUser = userService.getUserByEmail(authentication.getName()).get();
+    User currentUser = userService.getUserByEmail(authentication.getName());
     Page<Deposit> pageDeposits = depositService.getDepositsBySourceUser(currentUser, page);
     model.addAttribute("deposits", pageDeposits.getContent());
     model.addAttribute("pages", new int[pageDeposits.getTotalPages()]);
@@ -44,7 +44,7 @@ public class DepositController {
   @PostMapping("/profile")
   public String saveDeposit(Authentication authentication, @Valid @ModelAttribute("newDeposit") DepositDTO depositDto, BindingResult bindingResult) {
     if(bindingResult.hasErrors()) return "profile";
-    User currentUser = userService.getUserByEmail(authentication.getName()).get();
+    User currentUser = userService.getUserByEmail(authentication.getName());
     try { depositService.addDeposit(currentUser, depositDto);
     } catch (UserBalanceAmountException ubaEx) {
       bindingResult.rejectValue("amount", ubaEx.getMessage(), ubaEx.getMessage());
