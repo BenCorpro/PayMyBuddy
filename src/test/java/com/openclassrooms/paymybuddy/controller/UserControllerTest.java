@@ -29,9 +29,6 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.openclassrooms.paymybuddy.config.UserDetailsServiceTest;
-import com.openclassrooms.paymybuddy.dto.TransferDTO;
-import com.openclassrooms.paymybuddy.dto.UserDTO;
-import com.openclassrooms.paymybuddy.model.Transfer;
 import com.openclassrooms.paymybuddy.model.User;
 import com.openclassrooms.paymybuddy.service.UserService;
 
@@ -50,7 +47,6 @@ public class UserControllerTest {
 	private User userControllerTestC;
 	private User userControllerTestD;
 	private Page<User> pageUsersTest;
-	private UserDTO userDtoTest;
 	
 	@BeforeEach
 	public void setup() {

@@ -40,6 +40,11 @@ public Page<Transfer> getTransfersBySourceUser(User user, int page){
   }
   
   @Override
+  public Page<Transfer> getTransfersByAnyUsers(User sourceUser, User payeeUser,int page){
+	    return transferRepository.findBySourceUserOrPayeeUser(sourceUser, payeeUser,PageRequest.of(page, 3));
+	  }
+  
+  @Override
 public Transfer getTransferById(Integer id){
     return transferRepository.findById(id).orElse(null);
   }

@@ -13,5 +13,7 @@ public interface TransferRepository extends JpaRepository<Transfer, Integer>{
 
   public Page<Transfer> findBySourceUser(User user, Pageable pageable);
   
+  public Page<Transfer> findBySourceUserOrPayeeUser(User sourceUser, User payeeUser, Pageable pageable);
+  
   public void deleteBySourceUser(User user);
 }
