@@ -73,11 +73,11 @@ public Transfer getTransferById(Integer id){
     User payeeUser = userRepository.findById(transferDto.getPayeeUserId()).orElseThrow();
     if(!sourceUser.getConnections().contains(payeeUser)) return false;
     BigDecimal amount = transferDto.getAmount();
-    BigDecimal fee = new BigDecimal(0);
-    if (sourceUser.getBalance().compareTo(amount) >= 0) {
-      fee = FeeCalculator.feeCalculator(amount);
-      sourceUser.setBalance(sourceUser.getBalance().subtract(amount));
-      payeeUser.setBalance(payeeUser.getBalance().add(amount.subtract(fee)));
+    BigDecimal fee = FeeCalculator.feeCalculator(amount);
+    BigDecimal totalAmount = amount.add(fee);
+    if (sourceUser.getBalance().compareTo(totalAmount) >= 0) {
+      sourceUser.setBalance(sourceUser.getBalance().subtract(totalAmount));
+      payeeUser.setBalance(payeeUser.getBalance().add(amount));
     } else {
       throw new UserBalanceAmountException("Funds not sufficient to send transfer");
     }
