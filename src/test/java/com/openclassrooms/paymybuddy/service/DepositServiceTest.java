@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 
 import com.openclassrooms.paymybuddy.dto.DepositDTO;
+import com.openclassrooms.paymybuddy.exceptions.UserAccountException;
 import com.openclassrooms.paymybuddy.exceptions.UserBalanceAmountException;
 import com.openclassrooms.paymybuddy.model.Deposit;
 import com.openclassrooms.paymybuddy.model.User;
@@ -74,7 +75,7 @@ public class DepositServiceTest {
   
   @Transactional
   @Test
-  public void addDeposit_CreditCorrectAmount() throws UserBalanceAmountException{
+  public void addDeposit_CreditCorrectAmount() throws UserBalanceAmountException, UserAccountException{
     User userDepositTest = userService.getUserById(8);
     DepositDTO depositDtoTest = new DepositDTO();
     depositDtoTest.setAmount(new BigDecimal(20));
@@ -88,7 +89,7 @@ public class DepositServiceTest {
   
   @Transactional
   @Test
-  public void addDeposit_DebitSufficientBalance() throws UserBalanceAmountException{
+  public void addDeposit_DebitSufficientBalance() throws UserBalanceAmountException, UserAccountException{
     User userDepositTest = userService.getUserById(17);
     DepositDTO depositDtoTest = new DepositDTO();
     depositDtoTest.setAmount(new BigDecimal(30));

@@ -111,7 +111,7 @@ public boolean existsByEmail(String email) {
   @Override
 @Transactional
   public List<User> getConnections(int userId){
-    User currentUser = userRepository.findById(userId).get();
+    User currentUser = userRepository.findById(userId).orElse(null);
     return currentUser.getConnections();
   }
 
