@@ -89,7 +89,7 @@
 			<div class="card-header grey">Add a Bank Account</div>
 			<div class="card-body text-center">
 				<form th:action="@{/addBankAccount}" method="post">
-				<input type="text" name="accountNumber" pattern="[0-9]{3-100}" title="Account number should only contains numbers up to 100" th:value="${accountNumber}" placeholder="Bank Account Number">
+				<input type="text" name="accountNumber" pattern="[0-9]{3,100}" title="Account number should only contains numbers up to 100" th:value="${accountNumber}" placeholder="Bank Account Number">
 				<button type="submit" class="btn btn-primary">Submit</button>
 				</form>
 			</div>

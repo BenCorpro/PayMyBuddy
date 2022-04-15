@@ -3,6 +3,7 @@ package com.openclassrooms.paymybuddy.service.impl;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import javax.transaction.Transactional;
 
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.openclassrooms.paymybuddy.dto.DepositDTO;
+import com.openclassrooms.paymybuddy.exceptions.UserAccountException;
 import com.openclassrooms.paymybuddy.exceptions.UserBalanceAmountException;
 import com.openclassrooms.paymybuddy.model.Deposit;
 import com.openclassrooms.paymybuddy.model.User;
@@ -59,7 +61,10 @@ public Deposit getDepositById(Integer id){
   
   @Override
 @Transactional
-  public boolean addDeposit(User sourceUser, DepositDTO depositDto) throws UserBalanceAmountException{
+  public boolean addDeposit(User sourceUser, DepositDTO depositDto) throws UserBalanceAmountException, UserAccountException{
+    if(Objects.isNull(sourceUser.getBankAccount()) || sourceUser.getBankAccount().equals("Enter a bank account to make deposits")) {
+      throw new UserAccountException("A bank account needs to be registered in order to make deposits");
+    }
     BigDecimal amount = depositDto.getAmount();
     BigDecimal newBalance = new BigDecimal(0);
     switch (depositDto.getFlow()) {

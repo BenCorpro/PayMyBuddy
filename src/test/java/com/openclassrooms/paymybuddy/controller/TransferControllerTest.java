@@ -95,7 +95,7 @@ public class TransferControllerTest {
 	public void testGetTransfer() throws Exception{
 		when(userService.getUserByEmail("testControllers@email.com")).thenReturn(sourceUserControllerTest);
 		when(userService.getConnections(anyInt())).thenReturn(controlConnectionListTest);
-		when(transferService.getTransfersBySourceUser(sourceUserControllerTest, 0)).thenReturn(pageTransfersTest);
+		when(transferService.getTransfersByAnyUsers(sourceUserControllerTest, sourceUserControllerTest, 0)).thenReturn(pageTransfersTest);
 		mockMvc.perform(get("/transfer"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("transfer"))

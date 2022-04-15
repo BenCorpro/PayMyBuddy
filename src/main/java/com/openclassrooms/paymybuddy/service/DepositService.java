@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 
 import com.openclassrooms.paymybuddy.dto.DepositDTO;
+import com.openclassrooms.paymybuddy.exceptions.UserAccountException;
 import com.openclassrooms.paymybuddy.exceptions.UserBalanceAmountException;
 import com.openclassrooms.paymybuddy.model.Deposit;
 import com.openclassrooms.paymybuddy.model.User;
@@ -23,6 +24,6 @@ public interface DepositService {
 
 	void deleteDepositsBySourceUser(User user);
 
-	boolean addDeposit(User sourceUser, DepositDTO depositDto) throws UserBalanceAmountException;
+	boolean addDeposit(User sourceUser, DepositDTO depositDto) throws UserBalanceAmountException, UserAccountException;
 
 }

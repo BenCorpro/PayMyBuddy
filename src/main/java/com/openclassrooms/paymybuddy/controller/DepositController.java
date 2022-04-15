@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.openclassrooms.paymybuddy.dto.DepositDTO;
+import com.openclassrooms.paymybuddy.exceptions.UserAccountException;
 import com.openclassrooms.paymybuddy.exceptions.UserBalanceAmountException;
 import com.openclassrooms.paymybuddy.model.Deposit;
 import com.openclassrooms.paymybuddy.model.User;
@@ -48,6 +49,9 @@ public class DepositController {
     try { depositService.addDeposit(currentUser, depositDto);
     } catch (UserBalanceAmountException ubaEx) {
       bindingResult.rejectValue("amount", ubaEx.getMessage(), ubaEx.getMessage());
+      return "profile";
+    } catch (UserAccountException uaEx) {
+      bindingResult.rejectValue("amount", uaEx.getMessage(), uaEx.getMessage());
       return "profile";
     }
     return "redirect:/profile";
